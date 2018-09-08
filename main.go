@@ -11,5 +11,6 @@ func main() {
 		fmt.Fprintf(w, "asuh")
 	})
 
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("going to start now, k?")
+	http.ListenAndServe(":80", nil)
 }

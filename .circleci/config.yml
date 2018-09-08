@@ -20,7 +20,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "cd /var/www && ls -al"
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "cd /var/www/peddecord-photo-api"
 
 workflows:
   version: 2
