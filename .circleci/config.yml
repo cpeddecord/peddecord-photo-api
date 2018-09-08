@@ -43,15 +43,15 @@ workflows:
   build-verify-and-deploy:
     jobs:
       - build
-      - start-service:
-          requires:
-            - build
-      - verify:
-          requires:
-            - build
+      # - start-service:
+      #     requires:
+      #       - build
+      # - verify:
+      #     requires:
+      #       - build
       - deploy:
           requires:
-            - verify
+            # - verify
             - build
           filters:
             branches:
