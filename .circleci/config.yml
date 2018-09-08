@@ -40,15 +40,18 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  build-verify-and-deploy:
     jobs:
       - build
-      - start-service
-      - verify
-      - deploy:
+      - run:
           requires:
             - build
-            - verify
+      - verify
+          requires:
+            - run
+      - deploy
+          requires:
+            verify
           filters:
             branches:
               only: master
