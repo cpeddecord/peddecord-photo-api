@@ -43,6 +43,8 @@ workflows:
   build-and-deploy:
     jobs:
       - build
+      - start-service
+      - verify
       - deploy:
           requires:
             - build
