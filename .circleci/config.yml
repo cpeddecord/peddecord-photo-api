@@ -46,10 +46,10 @@ workflows:
       - run:
           requires:
             - build
-      - verify
+      - verify:
           requires:
             - run
-      - deploy
+      - deploy:
           requires:
             - verify
           filters:
