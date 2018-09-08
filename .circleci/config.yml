@@ -34,9 +34,14 @@ jobs:
       #     command: curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080
 
       - run:
+          name: scp
+          command: |
+            scp -o "StrictHostKeyChecking no" ./peddecord-photo-api root@138.197.7.35:/var/www
+
+      - run:
           name: deploy
           command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "echo hello"
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "cd /var/www && ls -al"
 
 workflows:
   version: 2
@@ -49,10 +54,13 @@ workflows:
       # - verify:
       #     requires:
       #       - build
+      - scp:
+          requires:
+            - build
       - deploy:
           requires:
             # - verify
-            - build
+            - scp
           filters:
             branches:
               only: master
