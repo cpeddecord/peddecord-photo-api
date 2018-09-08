@@ -21,8 +21,6 @@ jobs:
     steps:
       - checkout
 
-      - run: ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
-
       - run:
           name: build
           command: go build
