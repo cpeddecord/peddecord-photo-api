@@ -43,15 +43,16 @@ workflows:
   build-verify-and-deploy:
     jobs:
       - build
-      - run:
+      - start-service:
           requires:
             - build
       - verify:
           requires:
-            - run
+            - build
       - deploy:
           requires:
             - verify
+            - build
           filters:
             branches:
               only: master
