@@ -20,4 +20,4 @@ jobs:
       - run:
           name: deploy
           command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "/var/www/peddecord-photo-api"
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "/var/www/peddecord-photo-api &" > /tmp/last-process
