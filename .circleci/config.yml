@@ -25,4 +25,4 @@ jobs:
       - run:
           name: run
           command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux new-session -d -s gopher ./peddecord-photo-api"
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux new-session -d -s gopher ./var/www/peddecord-photo-api"
