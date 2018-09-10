@@ -12,9 +12,9 @@ jobs:
           name: build
           command: go build
 
-      -run:
+      - run:
           name: kill-gopher
-          command:  |
+          command: |
             ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux kill-session -t gopher"
 
       - run:
