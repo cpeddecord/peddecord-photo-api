@@ -12,12 +12,17 @@ jobs:
           name: build
           command: go build
 
+      -run:
+          name: kill-gopher
+          command:  |
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux kill-session -t gopher"
+
       - run:
           name: scp
           command: |
             scp -o "StrictHostKeyChecking no" ./peddecord-photo-api root@138.197.7.35:/var/www
 
       - run:
-          name: deploy
+          name: run
           command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "/var/www/peddecord-photo-api &" > /tmp/last-process
+            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux new-session -d -s gopher ./peddecord-photo-api"
