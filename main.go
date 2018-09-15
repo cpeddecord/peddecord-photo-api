@@ -8,9 +8,9 @@ import (
 // look at these sweet comments
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "hello")
+		fmt.Fprintf(w, "yo")
 	})
 
-	fmt.Println("going to start now, k?")
-	http.ListenAndServe(":80", nil)
+	fmt.Println("starting on port 8080")
+	http.ListenAndServe(":8080", nil)
 }
