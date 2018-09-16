@@ -12,7 +12,7 @@ var buildDate = os.Getenv("BUILD_DATE")
 // look at these sweet comments
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "yo: build %s at %s", commitHash, buildDate)
+		fmt.Fprintf(w, "seeing if these pipes truly work\n\nbuild %s at %s", commitHash, buildDate)
 	})
 
 	fmt.Println("Build Hash: ", commitHash)
