@@ -1,21 +1,51 @@
 version: 2
 jobs:
+  # run unit tests, build, and create an md5 hash from the binary
   build_and_test:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/cpeddecord/peddecord-photo-api
+    steps:
+      - checkout
+      - run:
+          name: unit-tests
+          command: go test
+      - run:
+          name: build
+          command: go build
+      - run:
+          name: generate-hash
+          command: mkdir -p workspace && md5 -q peddecord-photo-api > workspace/new_hash
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - new_hash
+
+  # coming soon, fail the build if our build output is equivalent to the last build
+  check_hash:
     docker:
       - image: circleci/golang:1.9
 
     working_directory: /go/src/github.com/cpeddecord/peddecord-photo-api
+
     steps:
-      - checkout
-
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
-          name: unit-tests
-          command: go test
+          name: check-hashes
+          command: |
+            if [ $(cat /tmp/workspace/current_hash) == $(cat /tmp/workspace/new_hash) ]; then
+              echo "hello"
+            else
 
-      - run:
-          name: build
-          command: go build
+              mkdir -p workspace && cp /tmp/workspace/new_hash /workspace/current_hash
+            fi
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - current_hash
 
+  # Build our container, upload to GC registry, poke Kube into deploying out new stuff
   deploy_to_gke:
     docker:
       - image: google/cloud-sdk
@@ -60,6 +90,11 @@ workflows:
   build_test_deploy:
     jobs:
       - build_and_test
+
+      - check_hash:
+          requires:
+            - build_and_test
+
       - deploy_to_gke:
           requires:
             - build_and_test
