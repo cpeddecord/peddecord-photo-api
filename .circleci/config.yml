@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build_old_stuff:
+  build_and_test:
     docker:
       - image: circleci/golang:1.9
 
@@ -9,23 +9,12 @@ jobs:
       - checkout
 
       - run:
+          name: unit-tests
+          command: go test
+
+      - run:
           name: build
           command: go build
-
-      - run:
-          name: kill-gopher
-          command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux kill-session -t gopher"
-
-      - run:
-          name: scp
-          command: |
-            scp -o "StrictHostKeyChecking no" ./peddecord-photo-api root@138.197.7.35:/var/www
-
-      - run:
-          name: run
-          command: |
-            ssh -o "StrictHostKeyChecking no" root@138.197.7.35 "tmux new-session -d -s gopher /var/www/peddecord-photo-api"
 
   deploy_to_gke:
     docker:
@@ -70,8 +59,11 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - build_old_stuff
+      - build_and_test
       - deploy_to_gke:
+          requires:
+            - build_and_test
+
           filters:
             branches:
               only: master
