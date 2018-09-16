@@ -62,7 +62,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            envsubst < ${HOME}/project/kube.yml > ${HOME}/patched_kube.yml
+            envsubst < ${HOME}/kube.yml > ${HOME}/patched_kube.yml
             kubectl apply -f ${HOME}/patched_kube.yml
             kubectl rollout status deployment/${PROJECT_NAME}
 
