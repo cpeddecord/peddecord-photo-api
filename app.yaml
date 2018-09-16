@@ -17,7 +17,7 @@ spec:
         run: peddecord-photo-api-exposed
     spec:
       containers:
-        - image: chrispeddecord/api:hello
+        - image: chrispeddecord/api:latest
           name: peddecord-photo-api
           ports:
             - containerPort: 8080

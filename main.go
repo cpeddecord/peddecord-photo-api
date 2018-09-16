@@ -3,7 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
+
+var commitHash = os.Getenv("COMMIT_REF")
+var buildDate = os.Getenv("BUILD_DATE")
 
 // look at these sweet comments
 func main() {
@@ -11,6 +15,8 @@ func main() {
 		fmt.Fprintf(w, "yo")
 	})
 
+	fmt.Println("Build Hash: ", commitHash)
+	fmt.Println("Build Date: ", buildDate)
 	fmt.Println("starting on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
