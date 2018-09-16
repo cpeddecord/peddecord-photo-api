@@ -71,7 +71,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build_old_stuff
-      - deploy_to_staging:
+      - deploy_to_gke:
           filters:
             branches:
               only: master
