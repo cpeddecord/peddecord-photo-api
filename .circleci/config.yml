@@ -33,12 +33,19 @@ jobs:
       - run:
           name: Get artifacts
           command: |
-            mkdir -p /tmp/artifacts
             RESULTS=$(curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN)
             # cat if grep barfs so we don't blow up wget... or this command
+            echo $RESULTS
+      - run:
+          name: Write artifacts to file
+          command: |
+            mkdir -p /tmp/artifacts
+            echo $RESULTS
             echo $RESULTS | grep -o 'https://[^"]*' | cat > /tmp/artifacts/artifacts.txt
+      - run:
+          name: Extract artifacts from response
+          command: |
             </tmp/artifacts/artifacts.txt xargs -I % wget %
-
       - run:
           name: Create default artifacts
           command: |
