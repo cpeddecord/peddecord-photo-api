@@ -54,7 +54,7 @@ jobs:
             else
               echo "previous build hash - $(cat /tmp/artifacts/current_hash.txt)"
               echo "new build hash - $(cat /tmp/workspace/new_hash)"
-              mv /tmp/workspace/new_hash > /tmp/current_hash.txt
+              mv /tmp/workspace/new_hash /tmp/current_hash.txt
             fi
       - store_artifacts:
           path: /tmp/current_hash.txt
