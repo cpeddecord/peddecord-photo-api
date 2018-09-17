@@ -35,15 +35,20 @@ jobs:
           name: create-default-hash-file
           command: |
             if [ ! -f /tmp/workspace/current_hash ]; then
-                echo "" > /tmp/workspace/current_hash
+              echo "no existing hash found, creating empty file"
+              touch /tmp/workspace/current_hash
             fi
       - run:
           name: check-hashes
           command: |
             if [ $(cat /tmp/workspace/current_hash) == $(cat /tmp/workspace/new_hash) ]; then
+              echo "build file equivalent to previous, aborting"
               exit 1
             else
-              mkdir -p workspace && cat /tmp/workspace/new_hash > workspace/current_hash
+              echo "previous build hash - $(cat /tmp/workspace/current_hash)"
+              echo "new build hash - $(cat /tmp/workspace/new_hash)"
+              mkdir -p workspace
+              cat /tmp/workspace/new_hash > workspace/current_hash
             fi
       - persist_to_workspace:
           root: workspace
