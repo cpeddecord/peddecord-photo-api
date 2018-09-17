@@ -33,17 +33,18 @@ jobs:
       - run:
           name: Get artifacts
           command: |
-            curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN | grep -o 'https://[^"]*' || true > artifacts.txt
-            <artifacts.txt xargs -I % wget %?circle-token=$CIRCLE_API_TOKEN
+            mkdir -p /tmp/artifacts
+            curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN | grep -o 'https://[^"]*' || true > /tmp/artifacts/artifacts.txt
+            </tmp/artifacts/artifacts.txt xargs -I % wget %?circle-token=$CIRCLE_API_TOKEN
+
       - run:
           name: Create default artifacts
           command: |
-            if [ ! -f current_hash.txt ]; then
+            if [ ! -f /tmp/artifacts/current_hash.txt ]; then
               echo "no existing hash found, creating empty file"
-              touch /current_hash.txt
+              touch /tmp/artifacts/current_hash.txt
+              cp /tmp/artifacts/current_hash.txt /tmp/current_hash.txt
             fi
-      - store_artifacts:
-          path: /current_hash.txt
       - run:
           name: Check last build hash against current build hash
           command: |
@@ -54,10 +55,10 @@ jobs:
               echo "previous build hash - $(cat /current_hash.txt)"
               echo "new build hash - $(cat /tmp/workspace/new_hash)"
               mkdir -p workspace
-              mv /tmp/workspace/new_hash > /current_hash.txt
+              mv /tmp/workspace/new_hash > /tmp/current_hash.txt
             fi
       - store_artifacts:
-          path: /current_hash.txt
+          path: /tmp/current_hash.txt
 
   # Build our container, upload to GC registry, poke Kube into deploying out new stuff
   deploy_to_gke:
