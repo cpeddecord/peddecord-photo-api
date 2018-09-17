@@ -25,20 +25,25 @@ jobs:
   check_hash:
     docker:
       - image: circleci/golang:1.9
-
     working_directory: /go/src/github.com/cpeddecord/peddecord-photo-api
 
     steps:
       - attach_workspace:
           at: /tmp/workspace
+
+      - run:
+          name: create-default-hash-file
+          command: |
+            if [ ! -f /tmp/workspace/current_hash ]; then
+                echo "" > /tmp/workspace/current_hash
+            fi
       - run:
           name: check-hashes
           command: |
             if [ $(cat /tmp/workspace/current_hash) == $(cat /tmp/workspace/new_hash) ]; then
-              echo "hello"
+              exit 1
             else
-
-              mkdir -p workspace && cp /tmp/workspace/new_hash /workspace/current_hash
+              mkdir -p workspace && cat /tmp/workspace/new_hash > workspace/current_hash
             fi
       - persist_to_workspace:
           root: workspace
