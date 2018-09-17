@@ -15,7 +15,7 @@ jobs:
           command: go build
       - run:
           name: generate-hash
-          command: mkdir -p workspace && md5 -q peddecord-photo-api > workspace/new_hash
+          command: mkdir -p workspace && md5sum -q peddecord-photo-api > workspace/new_hash
       - persist_to_workspace:
           root: workspace
           paths:
