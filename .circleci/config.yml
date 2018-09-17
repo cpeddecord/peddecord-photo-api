@@ -8,16 +8,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: unit-tests
+          name: Unit Tests
           command: go test
       - run:
-          name: build
+          name: Go Build
           command: go build
       - run:
-          name: generate-hash
+          name: Generate MD5 hash from binary
           command: mkdir -p workspace && md5sum peddecord-photo-api > workspace/new_hash
-      - store_artifacts:
-          path: workspace/new_hash
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - new_hash
 
   # coming soon, fail the build if our build output is equivalent to the last build
   check_hash:
@@ -28,30 +30,34 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-
       - run:
-          name: create-default-hash-file
+          name: Get artifacts
           command: |
-            if [ ! -f /tmp/workspace/current_hash ]; then
+            curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLECI_API_TOKEN | grep -o 'https://[^"]*' > artifacts.txt
+            <artifacts.txt xargs -I % wget %?circle-token=$CIRCLECI_API_TOKEN
+      - run:
+          name: Create default artifacts
+          command: |
+            if [ ! -f current_hash.txt ]; then
               echo "no existing hash found, creating empty file"
-              touch /tmp/workspace/current_hash
+              touch /current_hash.txt
             fi
+      - store_artifacts:
+          path: /current_hash.txt
       - run:
-          name: check-hashes
+          name: Check last build hash against current build hash
           command: |
-            if [ $(cat /tmp/workspace/current_hash) == $(cat /tmp/workspace/new_hash) ]; then
+            if [ $(cat /current_hash.txt) == $(cat /tmp/workspace/new_hash) ]; then
               echo "build file equivalent to previous, aborting"
               exit 1
             else
-              echo "previous build hash - $(cat /tmp/workspace/current_hash)"
+              echo "previous build hash - $(cat /current_hash.txt)"
               echo "new build hash - $(cat /tmp/workspace/new_hash)"
               mkdir -p workspace
-              cat /tmp/workspace/new_hash > workspace/current_hash
+              mv /tmp/workspace/new_hash > /current_hash.txt
             fi
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - current_hash
+      - store_artifacts:
+          path: /current_hash.txt
 
   # Build our container, upload to GC registry, poke Kube into deploying out new stuff
   deploy_to_gke:
