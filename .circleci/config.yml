@@ -48,13 +48,12 @@ jobs:
       - run:
           name: Check last build hash against current build hash
           command: |
-            if [ $(cat /current_hash.txt) == $(cat /tmp/workspace/new_hash) ]; then
+            if [ $(cat /tmp/artifacts/current_hash.txt) == $(cat /tmp/workspace/new_hash) ]; then
               echo "build file equivalent to previous, aborting"
               exit 1
             else
-              echo "previous build hash - $(cat /current_hash.txt)"
+              echo "previous build hash - $(cat /tmp/artifacts/current_hash.txt)"
               echo "new build hash - $(cat /tmp/workspace/new_hash)"
-              mkdir -p workspace
               mv /tmp/workspace/new_hash > /tmp/current_hash.txt
             fi
       - store_artifacts:
