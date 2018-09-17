@@ -34,13 +34,16 @@ jobs:
           name: Get artifacts
           command: |
             mkdir -p /tmp/artifacts
-            curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN | grep -o 'https://[^"]*' || true > /tmp/artifacts/artifacts.txt
-            </tmp/artifacts/artifacts.txt xargs -I % wget %?circle-token=$CIRCLE_API_TOKEN
+            RESULTS=$(curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN)
+            # cat if grep barfs so we don't blow up wget... or this command
+            echo $RESULTS | grep -o 'https://[^"]*' | cat > /tmp/artifacts/artifacts.txt
+            </tmp/artifacts/artifacts.txt xargs -I % wget %
 
       - run:
           name: Create default artifacts
           command: |
-            if [ ! -f /tmp/artifacts/current_hash.txt ]; then
+            if [ ! -f /tmp/artifacts/current_hash.txt ]
+            then
               echo "no existing hash found, creating empty file"
               touch /tmp/artifacts/current_hash.txt
               cp /tmp/artifacts/current_hash.txt /tmp/current_hash.txt
@@ -48,7 +51,8 @@ jobs:
       - run:
           name: Check last build hash against current build hash
           command: |
-            if [ $(cat /tmp/artifacts/current_hash.txt) == $(cat /tmp/workspace/new_hash) ]; then
+            if [ $(cat /tmp/artifacts/current_hash.txt) == $(cat /tmp/workspace/new_hash) ]
+            then
               echo "build file equivalent to previous, aborting"
               exit 1
             else
