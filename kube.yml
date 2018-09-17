@@ -35,18 +35,9 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ${PROJECT_NAME}
-spec:
-  containers:
-    - name: ${PROJECT_NAME}
-      image: ${PROJECT_NAME}
-      env:
-        - name: TEST_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: test-secret
-              key: please
+          env:
+            - name: "TEST_SECRET"
+              valueFrom:
+                secretFrom:
+                  name: test-secret
+                  key: please
