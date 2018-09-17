@@ -16,10 +16,8 @@ jobs:
       - run:
           name: generate-hash
           command: mkdir -p workspace && md5sum peddecord-photo-api > workspace/new_hash
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - new_hash
+      - store_artifacts:
+          path: workspace/new_hash
 
   # coming soon, fail the build if our build output is equivalent to the last build
   check_hash:
