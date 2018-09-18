@@ -38,6 +38,6 @@ spec:
           env:
             - name: "TEST_SECRET"
               valueFrom:
-                secretFrom:
+                secretKeyRef:
                   name: test-secret
                   key: please
