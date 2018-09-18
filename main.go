@@ -15,7 +15,7 @@ type response struct {
 
 var commitHash = os.Getenv("COMMIT_REF")
 var buildDate = os.Getenv("BUILD_DATE")
-var secret = os.Getenv("TEST_SECRET")
+var secret = os.Getenv("TEST_KEY_PLEASE_IGNORE")
 
 // look at these sweet comments
 func main() {

@@ -36,8 +36,28 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
-            - name: "TEST_SECRET"
+            - name: "DO_SPACE_KEY"
               valueFrom:
                 secretKeyRef:
-                  name: test-secret
-                  key: please
+                  name: do_spaces
+                  key: do_space_key
+            - name: "DO_SPACE_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  name: do_spaces
+                  key: do_space_secret
+            - name: "TEST_KEY_PLEASE_IGNORE"
+              valueFrom:
+                secretKeyRef:
+                  name: do_spaces
+                  key: test_key
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: do_spaces
+type: Opaque
+data:
+  do_space_key: ${DO_SPACE_KEY}
+  do_space_secret: ${DO_SPACE_SECRET}
+  test_key: ${ENV_SECRET}
