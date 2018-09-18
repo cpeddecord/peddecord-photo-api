@@ -11,8 +11,8 @@ import (
 )
 
 type response struct {
-	Hash string `json:hash`
-	Date string `json:date`
+	Hash string `json:"hash"`
+	Date string `json:"date"`
 }
 
 var commitHash = os.Getenv("COMMIT_REF")
@@ -20,6 +20,7 @@ var buildDate = os.Getenv("BUILD_DATE")
 
 var accessKey = os.Getenv("DO_SPACE_KEY")
 var secKey = os.Getenv("DO_SPACE_SECRET")
+
 var endpoint = "nyc3.digitaloceanspaces.com"
 var project = "cpeddecord"
 var bucket = "peddecord-photo"
@@ -49,7 +50,7 @@ func main() {
 		done := make(chan struct{})
 		for o := range client.ListObjects(bucket, "", true, done) {
 			if o.Err != nil {
-				fmt.Println(o.Err)
+				log.Println(o.Err)
 				return
 			}
 
