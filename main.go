@@ -63,6 +63,6 @@ func main() {
 
 	fmt.Println("Build Hash: ", commitHash)
 	fmt.Println("Build Date: ", buildDate)
-	fmt.Println("starting on port 8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("starting on port 3000")
+	http.ListenAndServe(":3000", nil)
 }

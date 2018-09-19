@@ -4,7 +4,7 @@ COPY . .
 RUN go get -d -v
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix -o peddecord-photo-api
 
-FROM scratch
+FROM alpine:latest
 ARG COMMIT_REF
 ARG BUILD_DATE
 ENV COMMIT_REF=${COMMIT_REF} \

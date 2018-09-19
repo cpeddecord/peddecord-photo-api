@@ -16,59 +16,6 @@ jobs:
       - run:
           name: Go Build
           command: go build
-      - run:
-          name: Generate MD5 hash from binary
-          command: mkdir -p workspace && md5sum peddecord-photo-api > workspace/new_hash
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - new_hash
-
-  # coming soon, fail the build if our build output is equivalent to the last build
-  check_hash:
-    docker:
-      - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/cpeddecord/peddecord-photo-api
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Get artifacts
-          command: |
-            mkdir -p /tmp/artifacts
-            RESULTS=$(curl https://circleci.com/api/v1.1/project/github/cpeddecord/peddecord-photo-api/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_API_TOKEN)
-            echo $RESULTS | grep -o 'https://[^"]*' | cat > /tmp/artifacts/artifacts.txt
-      - run:
-          name: Extract artifacts from response
-          when: always
-          command: |
-            </tmp/artifacts/artifacts.txt xargs -I % wget %
-      - run:
-          name: Create default artifacts
-          when: always
-          command: |
-            if [ ! -f /tmp/artifacts/current_hash.txt ]
-            then
-              echo "no existing hash found, creating empty file"
-              touch /tmp/artifacts/current_hash.txt
-              touch /tmp/current_hash.txt
-            fi
-      - run:
-          name: Check last build hash against current build hash
-          when: always
-          command: |
-            if [ $(cat /tmp/artifacts/current_hash.txt) == $(cat /tmp/workspace/new_hash) ]
-            then
-              echo "build file equivalent to previous, aborting"
-              exit 1
-            else
-              echo "previous build hash - $(cat /tmp/artifacts/current_hash.txt)"
-              echo "new build hash - $(cat /tmp/workspace/new_hash)"
-              mv /tmp/workspace/new_hash /tmp/current_hash.txt
-            fi
-      - store_artifacts:
-          path: /tmp/current_hash.txt
 
   # Build our container, upload to GC registry, poke Kube into deploying out new stuff
   deploy_to_gke:
@@ -76,7 +23,7 @@ jobs:
       - image: google/cloud-sdk
 
     environment:
-      PROJECT_NAME: "peddecord-photo-api"
+      PROJECT_NAME: "api-v1"
       GOOGLE_PROJECT_ID: "peddecord-photo"
       GOOGLE_COMPUTE_ZONE: "us-east1-b"
       GOOGLE_CLUSTER_NAME: "le-cluster"
@@ -115,13 +62,6 @@ workflows:
   api_deploy_jerrrrb:
     jobs:
       - build_and_test
-
-      - check_hash:
-          requires:
-            - build_and_test
-          filters:
-            branches:
-              only: master
 
       - deploy_to_gke:
           requires:
