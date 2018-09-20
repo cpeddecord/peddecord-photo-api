@@ -37,13 +37,3 @@ spec:
                 secretKeyRef:
                   name: do-spaces
                   key: test-key
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: do-spaces
-type: Opaque
-data:
-  do-space-key: ${DO_SPACE_KEY}
-  do-space-secret: ${DO_SPACE_SECRET}
-  test-key: ${ENV_SECRET}
