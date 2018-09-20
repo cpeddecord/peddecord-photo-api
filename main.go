@@ -13,6 +13,7 @@ import (
 type response struct {
 	Hash string `json:"hash"`
 	Date string `json:"date"`
+	Path string `json:"path"`
 }
 
 var commitHash = os.Getenv("COMMIT_REF")
@@ -32,13 +33,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	res := response{
-		commitHash,
-		buildDate,
-	}
-
-	data, _ := json.Marshal(res)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data, _ := json.Marshal(response{
+			commitHash,
+			buildDate,
+			r.URL.Path,
+		})
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	})
@@ -63,6 +63,6 @@ func main() {
 
 	fmt.Println("Build Hash: ", commitHash)
 	fmt.Println("Build Date: ", buildDate)
-	fmt.Println("starting on port 3000")
+	fmt.Println("Gophers at port 3000")
 	http.ListenAndServe(":3000", nil)
 }
