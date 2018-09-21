@@ -22,6 +22,8 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
+            - name: "BASE_PATH"
+              value: /api/v1/
             - name: "DO_SPACE_KEY"
               valueFrom:
                 secretKeyRef:
@@ -32,8 +34,3 @@ spec:
                 secretKeyRef:
                   name: do-spaces
                   key: do-space-secret
-            - name: "TEST_KEY_PLEASE_IGNORE"
-              valueFrom:
-                secretKeyRef:
-                  name: do-spaces
-                  key: test-key
