@@ -23,6 +23,11 @@ func main() {
 	}
 	queryPath := basePath + "graphql"
 
+	useGraphiql := true
+	if os.Getenv("USE_GRAPHIQL") == "false" {
+		useGraphiql = false
+	}
+
 	var schema, err = graphql.NewSchema(graphql.SchemaConfig{
 		Query: RootQuery,
 	})
@@ -33,9 +38,9 @@ func main() {
 
 	h := handler.New(&handler.Config{
 		Schema:     &schema,
-		Pretty:     true,
-		GraphiQL:   true,
-		Playground: true,
+		Pretty:     useGraphiql,
+		GraphiQL:   useGraphiql,
+		Playground: useGraphiql,
 	})
 
 	http.HandleFunc(basePath, func(w http.ResponseWriter, r *http.Request) {

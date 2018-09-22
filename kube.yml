@@ -24,6 +24,8 @@ spec:
           env:
             - name: "BASE_PATH"
               value: /api/v1/
+            - name: "USE_GRAPHIQL"
+              value: "false"
             - name: "DO_SPACE_KEY"
               valueFrom:
                 secretKeyRef:
