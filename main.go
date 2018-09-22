@@ -22,7 +22,6 @@ func main() {
 		basePath = "/"
 	}
 	queryPath := basePath + "graphql"
-	healthPath := basePath + "healthz"
 
 	var schema, err = graphql.NewSchema(graphql.SchemaConfig{
 		Query: RootQuery,
@@ -43,7 +42,7 @@ func main() {
 		fmt.Fprintf(w, "bread")
 	})
 
-	http.HandleFunc(healthPath, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "🍞")
 	})
 
