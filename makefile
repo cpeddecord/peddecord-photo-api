@@ -7,9 +7,15 @@ GOGET=$(GOCMD) get
 BINARY_NAME=peddecord-photo-api
 BINARY_UNIX=$(BINARY_NAME)_unix
 
-api-build: 
+api-get:
 				(cd graphql;$(GOGET) -d -v)
+
+api-build: 
+				make api-get
 				(cd graphql;$(GOBUILD) -o ../$(BINARY_NAME) -v)
+api-build-ci:
+				make api-get
+				cd graphql;CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix -o ../$(BINARY_NAME)
 api-test:
 				(cd graphql;$(GOTEST))
 api-run:

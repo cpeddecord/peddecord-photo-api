@@ -1,8 +1,7 @@
 FROM golang:latest as builder
 WORKDIR /go/src/peddecord-photo-api
 COPY . .
-RUN make api-build
-RUN (cd graphql;CGO_ENABLED=0 GOOS=linux go build -a -installsuffix -o ../peddecord-photo-api)
+RUN (make api-build-ci)
 
 FROM alpine:latest
 ARG COMMIT_REF
