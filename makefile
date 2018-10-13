@@ -14,7 +14,7 @@ api-build:
 				(cd graphql;$(GOBUILD) -o ../$(BINARY_NAME) -v)
 api-build-ci:
 				make api-get
-				(cd graphql;CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix -o ../$(BINARY_NAME))
+				(cd graphql;CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -o ../$(BINARY_NAME))
 api-test:
 				(cd graphql;$(GOTEST))
 api-run:
