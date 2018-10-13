@@ -9,13 +9,13 @@ jobs:
       - checkout
       - run:
           name: Get Dependencies
-          command: go get
+          command: make api-build
       - run:
           name: Unit Tests
-          command: go test
+          command: make api-test
       - run:
           name: Go Build
-          command: go build
+          command: make api-build
 
   # Build our container, upload to GC registry, poke Kube into deploying out new stuff
   deploy_to_gke:
