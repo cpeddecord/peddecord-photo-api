@@ -51,7 +51,7 @@ func main() {
 		fmt.Fprintf(w, "🍞")
 	})
 
-	http.Handle(queryPath, h)
+	http.Handle(queryPath, WithLogging(h))
 
 	fmt.Println("Gophers at port 3000")
 	http.ListenAndServe(":3000", nil)
