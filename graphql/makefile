@@ -12,7 +12,7 @@ build:
 test: 
 				$(GOTEST) -v ./...
 run:
-				$(GOBUILD)
+				make build
 				./$(BINARY_NAME)
 docker-minikube:
 				eval $(minikube docker-env)
